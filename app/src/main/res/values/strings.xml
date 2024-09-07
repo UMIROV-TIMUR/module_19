@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="disclaimer">Постеры представлены https://www.movieposters.com/</string>
+    <string name="menu_favorite">Избранное</string>
+    <string name="menu_watchlater">Посмотреть позже</string>
+    <string name="menu_collections">Подборки</string>
+    <string name="menu_settings">Настройки</string>
+    <string name="menu_page_title">Search it!</string>
+
+
 </resources>
