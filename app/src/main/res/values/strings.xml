@@ -6,6 +6,7 @@
     <string name="menu_collections">Подборки</string>
     <string name="menu_settings">Настройки</string>
     <string name="menu_page_title">Search it!</string>
+    <string name="title_activity_details1">DetailsActivity1</string>
 
 
 </resources>
