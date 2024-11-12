@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="disclaimer">Постеры представлены https://www.movieposters.com/</string>
+    <string name="menu_favorite">Избранное</string>
+    <string name="menu_watchlater">Посмотреть позже</string>
+    <string name="menu_collections">Подборки</string>
+    <string name="menu_settings">Настройки</string>
+    <string name="menu_page_title">Search it!</string>
+    <string name="title_activity_details1">DetailsActivity</string>
+    <string name="share_button">Поделиться</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
 </resources>
