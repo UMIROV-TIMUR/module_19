@@ -1,4 +1,5 @@
 package com.umirov.myapplication
+
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -9,11 +10,12 @@ class FilmViewHolder(private val binding: FilmItemBinding) : RecyclerView.ViewHo
     fun bind(film: Film) {
         //Привязываем view из layout к переменным
         binding.title.text = film.title
-            binding.poster.setImageResource(film.poster)
-         binding.description.text = film.description
+        binding.poster.setImageResource(film.poster)
+        binding.description.text = film.description
     }
-    companion object{
-        fun from(parent: ViewGroup): FilmViewHolder{
+
+    companion object {
+        fun from(parent: ViewGroup): FilmViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
             val binding = FilmItemBinding.inflate(layoutInflater, parent, false)
             return FilmViewHolder(binding)

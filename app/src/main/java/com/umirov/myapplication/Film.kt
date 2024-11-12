@@ -7,16 +7,15 @@ import androidx.versionedparcelable.VersionedParcelize
 
 
 @VersionedParcelize
- class Film(
+class Film(
     val title: String,
     val poster: Int,
-    val description: String) : Parcelable {
+    val description: String
+) : Parcelable {
 
     override fun describeContents(): Int {
         return 0
     }
-
-
 
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -31,7 +30,8 @@ import androidx.versionedparcelable.VersionedParcelize
             return Film(
                 parcel.readString() ?: "",
                 parcel.readInt(),
-                parcel.readString() ?: "")
+                parcel.readString() ?: ""
+            )
         }
 
         override fun newArray(size: Int): Array<Film?> {

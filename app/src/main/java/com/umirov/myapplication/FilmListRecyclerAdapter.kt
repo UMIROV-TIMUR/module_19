@@ -7,7 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.umirov.myapplication.databinding.FilmItemBinding
 
 //в параметр передаем слушатель, чтобы мы потом могли обрабатывать нажатия из класса активити
-class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) : RecyclerView.Adapter<FilmListRecyclerAdapter.FilmViewHolder>() {
+class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) :
+    RecyclerView.Adapter<FilmListRecyclerAdapter.FilmViewHolder>() {
     //Здесь у нас хранится список элементов для RV
     private val items = mutableListOf<Film>()
 
@@ -49,7 +50,8 @@ class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) : 
     }
 
     //ViewHolder класс с использованием View Binding
-    class FilmViewHolder(private val binding: FilmItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    class FilmViewHolder(private val binding: FilmItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(film: Film) {
             binding.title.text = film.title
             binding.poster.setImageResource(film.poster)

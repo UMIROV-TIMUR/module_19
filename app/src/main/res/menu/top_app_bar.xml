@@ -3,14 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-
     <item
         android:id="@+id/settings"
         android:icon="@drawable/baseline_build"
         android:title="@string/menu_settings"
-        app:showAsAction="ifRoom"/>
-
-
+        app:showAsAction="ifRoom" />
 
 
 </menu>
