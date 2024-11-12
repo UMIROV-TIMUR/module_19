@@ -12,4 +12,11 @@ class FilmViewHolder(private val binding: FilmItemBinding) : RecyclerView.ViewHo
             binding.poster.setImageResource(film.poster)
          binding.description.text = film.description
     }
+    companion object{
+        fun from(parent: ViewGroup): FilmViewHolder{
+            val layoutInflater = LayoutInflater.from(parent.context)
+            val binding = FilmItemBinding.inflate(layoutInflater, parent, false)
+            return FilmViewHolder(binding)
+        }
+    }
 }

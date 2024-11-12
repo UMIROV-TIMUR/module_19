@@ -6,7 +6,9 @@
     <string name="menu_collections">Подборки</string>
     <string name="menu_settings">Настройки</string>
     <string name="menu_page_title">Search it!</string>
-    <string name="title_activity_details1">DetailsActivity1</string>
+    <string name="title_activity_details1">DetailsActivity</string>
+    <string name="share_button">Поделиться</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>
