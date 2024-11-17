@@ -48,6 +48,11 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.fav -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(binding.fragmentPlaceholder.id, FavoritesFragment()).addToBackStack(
+                            null
+                        ).commit()
+
                     Toast.makeText(this, "Избранное", Toast.LENGTH_SHORT).show()
                     true
                 }

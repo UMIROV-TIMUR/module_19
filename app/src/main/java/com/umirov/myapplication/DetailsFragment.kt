@@ -1,5 +1,6 @@
 package com.umirov.myapplication
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,33 +11,62 @@ import com.umirov.myapplication.databinding.FragmentDetailsBinding
 class DetailsFragment : Fragment() {
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
+    private lateinit var film: Film
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         setFilmsDetails()
+
+        binding.detailsFabFavorites.setOnClickListener {
+                if (!film.isInFavorites) {
+                    binding.detailsFabFavorites.setImageResource(R.drawable.baseline_favorite_24)
+                    film.isInFavorites = true
+                } else {
+                    binding.detailsFabFavorites.setImageResource(R.drawable.baseline_favorite_border_24)
+                    film.isInFavorites = false
+                }
+            }
+
+        binding.detailsFabShare.setOnClickListener {
+            //Создаем интент
+            val intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(
+                    Intent.EXTRA_TEXT,
+                    "Check out this film: ${film.title} \n\n ${film.description}"
+                )
+                type = "text/plain"
+            }
+            //Запускаем наше активити
+            startActivity(Intent.createChooser(intent, "Share To:"))
+        }
     }
 
     private fun setFilmsDetails() {
-        // Получаем наш фильм из переданного бандла
-        val film = arguments?.getParcelable<Film>("film")
+        //Получаем наш фильм из переданного бандла
+        film = requireArguments().getParcelable("film") ?: return
 
-        // Проверяем, что film не равен null
-        film?.let {
-            // Устанавливаем заголовок
-            binding.detailsToolbar.title = it.title
-            // Устанавливаем картинку
-            binding.detailsPoster.setImageResource(it.poster)
-            // Устанавливаем описание
-            binding.detailsDescription.text = it.description
-        }
+        //Устанавливаем заголовок
+        binding.detailsToolbar.title = film.title
+        //Устанавливаем картинку
+        binding.detailsPoster.setImageResource(film.poster)
+        //Устанавливаем описание
+        binding.detailsDescription.text = film.description
+
+        binding.detailsFabFavorites.setImageResource(
+            if (film.isInFavorites) R.drawable.baseline_favorite_24
+            else R.drawable.baseline_favorite_border_24
+        )
     }
 
     override fun onDestroyView() {
