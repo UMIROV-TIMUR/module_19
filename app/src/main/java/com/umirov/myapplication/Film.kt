@@ -10,7 +10,8 @@ import androidx.versionedparcelable.VersionedParcelize
 class Film(
     val title: String,
     val poster: Int,
-    val description: String
+    val description: String,
+    var isInFavorites: Boolean = false
 ) : Parcelable {
 
     override fun describeContents(): Int {

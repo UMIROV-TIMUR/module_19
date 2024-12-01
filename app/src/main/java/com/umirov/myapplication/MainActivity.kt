@@ -19,11 +19,8 @@ class MainActivity : AppCompatActivity() {
 
         initNavigation()
 
-        supportFragmentManager
-            .beginTransaction()
-            .add(binding.fragmentPlaceholder.id, HomeFragment())
-            .addToBackStack(null)
-            .commit()
+        supportFragmentManager.beginTransaction()
+            .add(binding.fragmentPlaceholder.id, HomeFragment()).addToBackStack(null).commit()
 
 
     }
@@ -39,11 +36,8 @@ class MainActivity : AppCompatActivity() {
         fragment.arguments = bundle
 
         //Запускаем фрагмент
-        supportFragmentManager
-            .beginTransaction()
-            .replace(binding.fragmentPlaceholder.id, fragment)
-            .addToBackStack(null)
-            .commit()
+        supportFragmentManager.beginTransaction().replace(binding.fragmentPlaceholder.id, fragment)
+            .addToBackStack(null).commit()
 
     }
 
@@ -54,7 +48,12 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.fav -> {
-                    Toast.makeText(this, "Избранное", Toast.LENGTH_SHORT).show()
+                    supportFragmentManager.beginTransaction()
+                        .replace(binding.fragmentPlaceholder.id, FavoritesFragment()).addToBackStack(
+                            null
+                        ).commit()
+
+
                     true
                 }
 
