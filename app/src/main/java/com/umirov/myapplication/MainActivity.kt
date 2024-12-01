@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
                             null
                         ).commit()
 
-                    Toast.makeText(this, "Избранное", Toast.LENGTH_SHORT).show()
+
                     true
                 }
 

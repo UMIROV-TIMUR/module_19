@@ -31,7 +31,7 @@ class HomeFragment : Fragment() {
         Film(
             "Kingdom of the Planet of the Apes",
             R.drawable.kingdom_of_the_apes,
-            "Many years after the reign of Caesar, a young ape goes on a journey that will lead him to question everything he's been taught about the past and make choices that will define a future for apes and humans alike."
+           "Many years after the reign of Caesar, a young ape goes on a journey that will lead him to question everything he's been taught about the past and make choices that will define a future for apes and humans alike."
         ),
         Film(
             "Bad Boys: Ride or Die",
@@ -52,7 +52,9 @@ class HomeFragment : Fragment() {
             "The Wild Robot",
             R.drawable.robot,
             "After a shipwreck, an intelligent robot called Roz is stranded on an uninhabited island. To survive the harsh environment, Roz bonds with the island's animals and cares for an orphaned baby goose."
-        )
+        ),
+
+
     )
 
 
