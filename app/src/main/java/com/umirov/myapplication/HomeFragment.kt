@@ -1,6 +1,8 @@
 package com.umirov.myapplication
 
 import android.os.Bundle
+import android.transition.Scene
+import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,12 +10,14 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.umirov.myapplication.databinding.FragmentHomeBinding
+import com.umirov.myapplication.databinding.MergeHomeScreenContentBinding
 
 
 class HomeFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
-    private val binding get() = _binding
+    private lateinit var mergeBinding: MergeHomeScreenContentBinding
+    private lateinit var b: FragmentHomeBinding
+
     private lateinit var filmsAdapter: FilmListRecyclerAdapter
 
 
@@ -31,7 +35,7 @@ class HomeFragment : Fragment() {
         Film(
             "Kingdom of the Planet of the Apes",
             R.drawable.kingdom_of_the_apes,
-           "Many years after the reign of Caesar, a young ape goes on a journey that will lead him to question everything he's been taught about the past and make choices that will define a future for apes and humans alike."
+            "Many years after the reign of Caesar, a young ape goes on a journey that will lead him to question everything he's been taught about the past and make choices that will define a future for apes and humans alike."
         ),
         Film(
             "Bad Boys: Ride or Die",
@@ -52,9 +56,7 @@ class HomeFragment : Fragment() {
             "The Wild Robot",
             R.drawable.robot,
             "After a shipwreck, an intelligent robot called Roz is stranded on an uninhabited island. To survive the harsh environment, Roz bonds with the island's animals and cares for an orphaned baby goose."
-        ),
-
-
+        )
     )
 
 
@@ -63,19 +65,31 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        return binding?.root
+        b = FragmentHomeBinding.inflate(inflater, container, false)
+        mergeBinding = MergeHomeScreenContentBinding.bind(b.root)
+        return b.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding?.searchView?.setOnClickListener {
-            binding?.searchView?.isIconified = false
+
+        val scene = Scene.getSceneForLayout(
+            b.homeFragmentRoot,
+            R.layout.merge_home_screen_content,
+            requireContext()
+        )
+        TransitionManager.go(scene)
+
+
+
+
+        mergeBinding.searchView.setOnClickListener {
+            mergeBinding.searchView.isIconified = false
 
         }
 
-        binding?.searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+        mergeBinding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
             }
@@ -97,7 +111,7 @@ class HomeFragment : Fragment() {
 
 
 
-        binding?.mainRecycler?.apply {
+        mergeBinding.mainRecycler.apply {
             filmsAdapter =
                 FilmListRecyclerAdapter(object : FilmListRecyclerAdapter.OnItemClickListener {
                     override fun click(film: Film) {
@@ -107,9 +121,9 @@ class HomeFragment : Fragment() {
 
 
                 })
-            adapter = filmsAdapter
-            layoutManager = LinearLayoutManager(requireContext())
-            addItemDecoration(TopSpacingItemDecoration(8))
+            this.adapter = filmsAdapter
+            this.layoutManager = LinearLayoutManager(requireContext())
+            this.addItemDecoration(TopSpacingItemDecoration(8))
         }
         // Кладем нашу БД в RV
         filmsAdapter.addItems(filmsDataBase)
@@ -119,7 +133,6 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
 
-        _binding = null
 
     }
 }
