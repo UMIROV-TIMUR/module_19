@@ -1,6 +1,11 @@
 package com.umirov.myapplication
 
 import android.os.Bundle
+import android.transition.Scene
+import android.transition.Slide
+import android.transition.TransitionManager
+import android.transition.TransitionSet
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,14 +13,14 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.umirov.myapplication.databinding.FragmentHomeBinding
-
+import com.umirov.myapplication.databinding.MergeHomeScreenContentBinding
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-    private val binding get() = _binding
+    private val binding get() = _binding!!
+    private lateinit var mergeBinding: MergeHomeScreenContentBinding
     private lateinit var filmsAdapter: FilmListRecyclerAdapter
-
 
     private val filmsDataBase = listOf(
         Film(
@@ -31,7 +36,7 @@ class HomeFragment : Fragment() {
         Film(
             "Kingdom of the Planet of the Apes",
             R.drawable.kingdom_of_the_apes,
-           "Many years after the reign of Caesar, a young ape goes on a journey that will lead him to question everything he's been taught about the past and make choices that will define a future for apes and humans alike."
+            "Many years after the reign of Caesar, a young ape goes on a journey that will lead him to question everything he's been taught about the past and make choices that will define a future for apes and humans alike."
         ),
         Film(
             "Bad Boys: Ride or Die",
@@ -52,30 +57,55 @@ class HomeFragment : Fragment() {
             "The Wild Robot",
             R.drawable.robot,
             "After a shipwreck, an intelligent robot called Roz is stranded on an uninhabited island. To survive the harsh environment, Roz bonds with the island's animals and cares for an orphaned baby goose."
-        ),
-
-
+        )
     )
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        return binding?.root
+        mergeBinding = MergeHomeScreenContentBinding.inflate(layoutInflater, binding.homeFragmentRoot, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding?.searchView?.setOnClickListener {
-            binding?.searchView?.isIconified = false
-
+        val scene = Scene(binding.homeFragmentRoot, mergeBinding.root)
+        val searchSlide = Slide(Gravity.TOP).addTarget(R.id.search_view)
+        val recyclerSlide = Slide(Gravity.BOTTOM).addTarget(R.id.main_recycler)
+        val customTransition = TransitionSet().apply {
+            duration = 500
+            addTransition(searchSlide)
+            addTransition(recyclerSlide)
         }
 
-        binding?.searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+        TransitionManager.go(scene, customTransition)
+        initList()
+        setupSearch()
+    }
+
+    private fun initList() {
+        mergeBinding.mainRecycler.apply {
+            filmsAdapter = FilmListRecyclerAdapter(object : FilmListRecyclerAdapter.OnItemClickListener {
+                override fun click(film: Film) {
+                    (requireActivity() as MainActivity).launchDetailsFragment(film)
+                }
+            })
+            adapter = filmsAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+            addItemDecoration(TopSpacingItemDecoration(8))
+        }
+        filmsAdapter.addItems(filmsDataBase)
+    }
+
+    private fun setupSearch() {
+        mergeBinding.searchView.setOnClickListener {
+            mergeBinding.searchView.isIconified = false
+        }
+
+        mergeBinding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
             }
@@ -87,41 +117,15 @@ class HomeFragment : Fragment() {
                 }
                 val result = filmsDataBase.filter {
                     it.title.contains(newText.toString(), ignoreCase = true)
-
                 }
                 filmsAdapter.addItems(result)
                 return true
-
             }
         })
-
-
-
-        binding?.mainRecycler?.apply {
-            filmsAdapter =
-                FilmListRecyclerAdapter(object : FilmListRecyclerAdapter.OnItemClickListener {
-                    override fun click(film: Film) {
-
-                        (requireActivity() as MainActivity).launchDetailsFragment(film)
-                    }
-
-
-                })
-            adapter = filmsAdapter
-            layoutManager = LinearLayoutManager(requireContext())
-            addItemDecoration(TopSpacingItemDecoration(8))
-        }
-        // Кладем нашу БД в RV
-        filmsAdapter.addItems(filmsDataBase)
-
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-
         _binding = null
-
     }
 }
-
-
