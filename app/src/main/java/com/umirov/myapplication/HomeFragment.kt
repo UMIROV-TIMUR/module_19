@@ -2,7 +2,10 @@ package com.umirov.myapplication
 
 import android.os.Bundle
 import android.transition.Scene
+import android.transition.Slide
 import android.transition.TransitionManager
+import android.transition.TransitionSet
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,14 +15,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.umirov.myapplication.databinding.FragmentHomeBinding
 import com.umirov.myapplication.databinding.MergeHomeScreenContentBinding
 
-
 class HomeFragment : Fragment() {
 
+    private var _binding: FragmentHomeBinding? = null
+    private val binding get() = _binding!!
     private lateinit var mergeBinding: MergeHomeScreenContentBinding
-    private lateinit var b: FragmentHomeBinding
-
     private lateinit var filmsAdapter: FilmListRecyclerAdapter
-
 
     private val filmsDataBase = listOf(
         Film(
@@ -59,34 +60,49 @@ class HomeFragment : Fragment() {
         )
     )
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        b = FragmentHomeBinding.inflate(inflater, container, false)
-        mergeBinding = MergeHomeScreenContentBinding.bind(b.root)
-        return b.root
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        mergeBinding = MergeHomeScreenContentBinding.inflate(layoutInflater, binding.homeFragmentRoot, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val scene = Scene(binding.homeFragmentRoot, mergeBinding.root)
+        val searchSlide = Slide(Gravity.TOP).addTarget(R.id.search_view)
+        val recyclerSlide = Slide(Gravity.BOTTOM).addTarget(R.id.main_recycler)
+        val customTransition = TransitionSet().apply {
+            duration = 500
+            addTransition(searchSlide)
+            addTransition(recyclerSlide)
+        }
 
-        val scene = Scene.getSceneForLayout(
-            b.homeFragmentRoot,
-            R.layout.merge_home_screen_content,
-            requireContext()
-        )
-        TransitionManager.go(scene)
+        TransitionManager.go(scene, customTransition)
+        initList()
+        setupSearch()
+    }
 
+    private fun initList() {
+        mergeBinding.mainRecycler.apply {
+            filmsAdapter = FilmListRecyclerAdapter(object : FilmListRecyclerAdapter.OnItemClickListener {
+                override fun click(film: Film) {
+                    (requireActivity() as MainActivity).launchDetailsFragment(film)
+                }
+            })
+            adapter = filmsAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+            addItemDecoration(TopSpacingItemDecoration(8))
+        }
+        filmsAdapter.addItems(filmsDataBase)
+    }
 
-
-
+    private fun setupSearch() {
         mergeBinding.searchView.setOnClickListener {
             mergeBinding.searchView.isIconified = false
-
         }
 
         mergeBinding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -101,40 +117,15 @@ class HomeFragment : Fragment() {
                 }
                 val result = filmsDataBase.filter {
                     it.title.contains(newText.toString(), ignoreCase = true)
-
                 }
                 filmsAdapter.addItems(result)
                 return true
-
             }
         })
-
-
-
-        mergeBinding.mainRecycler.apply {
-            filmsAdapter =
-                FilmListRecyclerAdapter(object : FilmListRecyclerAdapter.OnItemClickListener {
-                    override fun click(film: Film) {
-
-                        (requireActivity() as MainActivity).launchDetailsFragment(film)
-                    }
-
-
-                })
-            this.adapter = filmsAdapter
-            this.layoutManager = LinearLayoutManager(requireContext())
-            this.addItemDecoration(TopSpacingItemDecoration(8))
-        }
-        // Кладем нашу БД в RV
-        filmsAdapter.addItems(filmsDataBase)
-
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-
-
+        _binding = null
     }
 }
-
-
