@@ -1,11 +1,6 @@
 package com.umirov.myapplication
 
 import android.os.Bundle
-import android.transition.Scene
-import android.transition.Slide
-import android.transition.TransitionManager
-import android.transition.TransitionSet
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,13 +8,12 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.umirov.myapplication.databinding.FragmentHomeBinding
-import com.umirov.myapplication.databinding.MergeHomeScreenContentBinding
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private lateinit var mergeBinding: MergeHomeScreenContentBinding
+
     private lateinit var filmsAdapter: FilmListRecyclerAdapter
 
     private val filmsDataBase = listOf(
@@ -65,47 +59,36 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        mergeBinding = MergeHomeScreenContentBinding.inflate(layoutInflater, binding.homeFragmentRoot, false)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
 
-        val scene = Scene(binding.homeFragmentRoot, mergeBinding.root)
-        val searchSlide = Slide(Gravity.TOP).addTarget(R.id.search_view)
-        val recyclerSlide = Slide(Gravity.BOTTOM).addTarget(R.id.main_recycler)
-        val customTransition = TransitionSet().apply {
-            duration = 500
-            addTransition(searchSlide)
-            addTransition(recyclerSlide)
-        }
 
-        TransitionManager.go(scene, customTransition)
-        initList()
-        setupSearch()
-    }
 
-    private fun initList() {
-        mergeBinding.mainRecycler.apply {
-            filmsAdapter = FilmListRecyclerAdapter(object : FilmListRecyclerAdapter.OnItemClickListener {
-                override fun click(film: Film) {
-                    (requireActivity() as MainActivity).launchDetailsFragment(film)
-                }
-            })
-            adapter = filmsAdapter
-            layoutManager = LinearLayoutManager(requireContext())
-            addItemDecoration(TopSpacingItemDecoration(8))
-        }
+
+
+
+        AnimationHelper.performFragmentCircularRevealAnimation(binding.root, requireActivity(), 1)
+
+        initSearchView()
+        initRecycler()
+
         filmsAdapter.addItems(filmsDataBase)
+
+
     }
 
-    private fun setupSearch() {
-        mergeBinding.searchView.setOnClickListener {
-            mergeBinding.searchView.isIconified = false
+
+    private fun initSearchView() {
+        binding.searchView.setOnClickListener {
+            binding.searchView.isIconified = false
         }
 
-        mergeBinding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
             }
@@ -124,8 +107,29 @@ class HomeFragment : Fragment() {
         })
     }
 
+    private fun initRecycler() {
+
+        filmsAdapter =
+            FilmListRecyclerAdapter(object : FilmListRecyclerAdapter.OnItemClickListener {
+                override fun click(film: Film) {
+                    (requireActivity() as MainActivity).launchDetailsFragment(film)
+                }
+            })
+        binding.mainRecycler.apply {
+            adapter = filmsAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+            val decorator = TopSpacingItemDecoration(8)
+            addItemDecoration(decorator)
+        }
+    }
+
+
+
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
+
 }
