@@ -1,6 +1,7 @@
 package com.umirov.myapplication
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,14 +66,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
-
-
-
-
-
-
-        AnimationHelper.performFragmentCircularRevealAnimation(binding.root, requireActivity(), 1)
+        AnimationHelper.performFragmentCircularRevealAnimation(binding.homeFragmentRoot, requireActivity(), 1)
 
         initSearchView()
         initRecycler()
@@ -90,10 +84,12 @@ class HomeFragment : Fragment() {
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
+                Log.d("SearchView", "Query submitted: $query")
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+                Log.d("SearchView", "Query changed: $newText")
                 if (newText.isNullOrEmpty()) {
                     filmsAdapter.addItems(filmsDataBase)
                     return true
@@ -109,19 +105,24 @@ class HomeFragment : Fragment() {
 
     private fun initRecycler() {
 
-        filmsAdapter =
-            FilmListRecyclerAdapter(object : FilmListRecyclerAdapter.OnItemClickListener {
-                override fun click(film: Film) {
-                    (requireActivity() as MainActivity).launchDetailsFragment(film)
-                }
-            })
+
+
+
+            filmsAdapter =
+                FilmListRecyclerAdapter(object : FilmListRecyclerAdapter.OnItemClickListener {
+                    override fun click(film: Film) {
+                        (requireActivity() as MainActivity).launchDetailsFragment(film)
+                    }
+                })
         binding.mainRecycler.apply {
+
             adapter = filmsAdapter
             layoutManager = LinearLayoutManager(requireContext())
             val decorator = TopSpacingItemDecoration(8)
             addItemDecoration(decorator)
         }
     }
+
 
 
 
