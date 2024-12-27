@@ -1,6 +1,7 @@
 package com.umirov.myapplication
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,13 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.umirov.myapplication.databinding.FragmentHomeBinding
 
-
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-    private val binding get() = _binding
-    private lateinit var filmsAdapter: FilmListRecyclerAdapter
+    private val binding get() = _binding!!
 
+    private lateinit var filmsAdapter: FilmListRecyclerAdapter
 
     private val filmsDataBase = listOf(
         Film(
@@ -31,7 +31,7 @@ class HomeFragment : Fragment() {
         Film(
             "Kingdom of the Planet of the Apes",
             R.drawable.kingdom_of_the_apes,
-           "Many years after the reign of Caesar, a young ape goes on a journey that will lead him to question everything he's been taught about the past and make choices that will define a future for apes and humans alike."
+            "Many years after the reign of Caesar, a young ape goes on a journey that will lead him to question everything he's been taught about the past and make choices that will define a future for apes and humans alike."
         ),
         Film(
             "Bad Boys: Ride or Die",
@@ -52,76 +52,85 @@ class HomeFragment : Fragment() {
             "The Wild Robot",
             R.drawable.robot,
             "After a shipwreck, an intelligent robot called Roz is stranded on an uninhabited island. To survive the harsh environment, Roz bonds with the island's animals and cares for an orphaned baby goose."
-        ),
-
-
+        )
     )
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        return binding?.root
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        AnimationHelper.performFragmentCircularRevealAnimation(binding.homeFragmentRoot, requireActivity(), 1)
 
-        binding?.searchView?.setOnClickListener {
-            binding?.searchView?.isIconified = false
+        initSearchView()
+        initRecycler()
 
+        filmsAdapter.addItems(filmsDataBase)
+
+
+    }
+
+
+    private fun initSearchView() {
+        binding.searchView.setOnClickListener {
+            binding.searchView.isIconified = false
         }
 
-        binding?.searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
+                Log.d("SearchView", "Query submitted: $query")
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+                Log.d("SearchView", "Query changed: $newText")
                 if (newText.isNullOrEmpty()) {
                     filmsAdapter.addItems(filmsDataBase)
                     return true
                 }
                 val result = filmsDataBase.filter {
                     it.title.contains(newText.toString(), ignoreCase = true)
-
                 }
                 filmsAdapter.addItems(result)
                 return true
-
             }
         })
+    }
+
+    private fun initRecycler() {
 
 
 
-        binding?.mainRecycler?.apply {
+
             filmsAdapter =
                 FilmListRecyclerAdapter(object : FilmListRecyclerAdapter.OnItemClickListener {
                     override fun click(film: Film) {
-
                         (requireActivity() as MainActivity).launchDetailsFragment(film)
                     }
-
-
                 })
+        binding.mainRecycler.apply {
+
             adapter = filmsAdapter
             layoutManager = LinearLayoutManager(requireContext())
-            addItemDecoration(TopSpacingItemDecoration(8))
+            val decorator = TopSpacingItemDecoration(8)
+            addItemDecoration(decorator)
         }
-        // Кладем нашу БД в RV
-        filmsAdapter.addItems(filmsDataBase)
-
     }
+
+
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()
-
         _binding = null
-
     }
+
+
 }
-
-

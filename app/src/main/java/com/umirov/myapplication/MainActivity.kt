@@ -2,11 +2,11 @@ package com.umirov.myapplication
 
 
 import android.os.Bundle
-import android.widget.Toast
-
 import androidx.appcompat.app.AppCompatActivity
-
+import androidx.fragment.app.Fragment
 import com.umirov.myapplication.databinding.ActivityMainBinding
+
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -16,6 +16,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
+
+        val lottieAnimationView = binding.lottieAnimationView
+        lottieAnimationView.setAnimation("anim.json")
+        lottieAnimationView.playAnimation()
+
+
 
         initNavigation()
 
@@ -48,22 +56,38 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.fav -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(binding.fragmentPlaceholder.id, FavoritesFragment()).addToBackStack(
-                            null
-                        ).commit()
+                    val tag = "favorites"
+                    val fragment = checkFragmentExistence(tag)
+
+                    changeFragment(fragment ?: FavoritesFragment(), tag)
+
+
 
 
                     true
                 }
 
                 R.id.watchlater -> {
-                    Toast.makeText(this, "Посмотреть позже", Toast.LENGTH_SHORT).show()
+                    val tag = "watchlater"
+                    val fragment = checkFragmentExistence(tag)
+
+                    changeFragment(fragment ?: WatchLaterFragment(), tag)
                     true
                 }
 
-                R.id.collections -> {
-                    Toast.makeText(this, "Подборки", Toast.LENGTH_SHORT).show()
+                R.id.selections -> {
+                    val tag = "selections"
+                    val fragment = checkFragmentExistence(tag)
+
+                    changeFragment(fragment ?: SelectionsFragment(), tag)
+                    true
+                }
+
+                R.id.home -> {
+                    val tag = "home"
+                    val fragment = checkFragmentExistence(tag)
+                    changeFragment(fragment ?: HomeFragment(), tag)
+
                     true
                 }
 
@@ -71,7 +95,21 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+
+    private fun checkFragmentExistence(tag: String): Fragment? =
+        supportFragmentManager.findFragmentByTag(tag)
+
+    private fun changeFragment(fragment: Fragment, tag: String) {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_placeholder, fragment, tag)
+            .addToBackStack(null)
+            .commit()
+    }
 }
+
+
 
 
 
