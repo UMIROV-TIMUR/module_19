@@ -58,6 +58,8 @@ android {
 
 dependencies {
     implementation("androidx.fragment:fragment-ktx:1.8.5")
+    implementation(libs.glide)
+    annotationProcessor(libs.compiler)
 
     implementation (libs.lottie)
 
