@@ -1,9 +1,10 @@
 package com.umirov.myapplication
 
+import android.animation.ValueAnimator
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.umirov.myapplication.Film
+import com.bumptech.glide.Glide
 import com.umirov.myapplication.databinding.FilmItemBinding
 
 class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) : RecyclerView.Adapter<FilmListRecyclerAdapter.FilmViewHolder>() {
@@ -17,10 +18,15 @@ class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) : 
     }
 
     override fun onBindViewHolder(holder: FilmViewHolder, position: Int) {
-        val film = items[position]
-        holder.bind(film)
-        holder.itemView.setOnClickListener {
-            clickListener.click(film)
+        when (holder) {
+            is FilmViewHolder -> {
+                holder.bind(items[position])
+                holder.itemView.setOnClickListener {
+                    clickListener.click(items[position])
+                }
+
+            }
+
         }
     }
 
@@ -32,9 +38,27 @@ class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) : 
 
     inner class FilmViewHolder(private val binding: FilmItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(film: Film) {
+            Glide.with(itemView)
+                .load(film.poster)
+                .centerCrop()
+                .into(binding.poster)
+
+            binding.ratingDonut.setProgress((film.rating * 10).toInt())
             binding.title.text = film.title
             binding.description.text = film.description
             binding.poster.setImageResource(film.poster)
+            animateRating(binding.ratingDonut, film.rating)
+        }
+
+        private fun animateRating(view: RatingDonutView, rating: Float) {
+            val animator = ValueAnimator.ofInt(0, (rating * 10).toInt())
+            animator.duration = 1000
+            animator.addUpdateListener { animation ->
+                val animatedValue = animation.animatedValue as Int
+                view.setProgress(animatedValue)
+            }
+            animator.start()
+
         }
     }
 

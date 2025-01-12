@@ -2,8 +2,8 @@ package com.umirov.myapplication
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.umirov.myapplication.databinding.ActivityMainBinding
 import androidx.fragment.app.Fragment
+import com.umirov.myapplication.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -13,6 +13,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+
+
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, SplashFragment())
@@ -21,6 +24,7 @@ class MainActivity : AppCompatActivity() {
 
         initNavigation()
     }
+
 
     fun launchDetailsFragment(film: Film) {
         // Create a bundle with the film
