@@ -1,4 +1,4 @@
-package com.umirov.myapplication
+package com.umirov.myapplication.domain
 
 
 import android.os.Parcel
@@ -11,6 +11,7 @@ class Film(
     val title: String,
     val poster: Int,
     val description: String,
+    var rating: Float = 0f,
     var isInFavorites: Boolean = false
 ) : Parcelable {
 

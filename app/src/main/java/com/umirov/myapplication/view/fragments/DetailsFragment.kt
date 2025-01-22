@@ -1,4 +1,4 @@
-package com.umirov.myapplication
+package com.umirov.myapplication.view.fragments
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.umirov.myapplication.R
 import com.umirov.myapplication.databinding.FragmentDetailsBinding
+import com.umirov.myapplication.domain.Film
 
 class DetailsFragment : Fragment() {
     private var _binding: FragmentDetailsBinding? = null
@@ -24,6 +26,8 @@ class DetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
 
         setFilmsDetails()
 
