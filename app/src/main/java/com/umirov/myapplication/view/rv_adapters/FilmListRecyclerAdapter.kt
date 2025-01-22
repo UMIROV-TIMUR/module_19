@@ -1,4 +1,4 @@
-package com.umirov.myapplication
+package com.umirov.myapplication.view.rv_adapters
 
 import android.animation.ValueAnimator
 import android.view.LayoutInflater
@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.umirov.myapplication.databinding.FilmItemBinding
+import com.umirov.myapplication.domain.Film
+import com.umirov.myapplication.view.customviews.RatingDonutView
 
 class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) : RecyclerView.Adapter<FilmListRecyclerAdapter.FilmViewHolder>() {
     private val items = mutableListOf<Film>()

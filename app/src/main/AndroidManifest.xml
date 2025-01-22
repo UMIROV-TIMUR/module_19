@@ -3,6 +3,7 @@
     package="com.umirov.myapplication">
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
 
@@ -15,7 +16,7 @@
     <!-- Splash Activity -->
 
     <!-- Main Activity -->
-    <activity android:name=".MainActivity"
+    <activity android:name=".view.rv_viewholders.MainActivity"
         android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />

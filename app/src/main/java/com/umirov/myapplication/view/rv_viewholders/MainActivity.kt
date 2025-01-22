@@ -1,9 +1,17 @@
-package com.umirov.myapplication
+package com.umirov.myapplication.view.rv_viewholders
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.umirov.myapplication.R
 import com.umirov.myapplication.databinding.ActivityMainBinding
+import com.umirov.myapplication.domain.Film
+import com.umirov.myapplication.view.fragments.DetailsFragment
+import com.umirov.myapplication.view.fragments.FavoritesFragment
+import com.umirov.myapplication.view.fragments.HomeFragment
+import com.umirov.myapplication.view.fragments.SelectionsFragment
+import com.umirov.myapplication.view.fragments.SplashFragment
+import com.umirov.myapplication.view.fragments.WatchLaterFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding

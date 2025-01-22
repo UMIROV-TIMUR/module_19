@@ -1,4 +1,4 @@
-package com.umirov.myapplication
+package com.umirov.myapplication.utils
 
 import android.app.Activity
 import android.view.View

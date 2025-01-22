@@ -1,10 +1,11 @@
-package com.umirov.myapplication
+package com.umirov.myapplication.view.rv_viewholders
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.umirov.myapplication.databinding.FilmItemBinding
+import com.umirov.myapplication.domain.Film
 
 // In the constructor of the class, we pass the layout we created (film_item.xml)
 class FilmViewHolder(private val binding: FilmItemBinding) : RecyclerView.ViewHolder(binding.root) {

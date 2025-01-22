@@ -1,4 +1,4 @@
-package com.umirov.myapplication
+package com.umirov.myapplication.domain
 
 
 import android.os.Parcel
