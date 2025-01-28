@@ -12,8 +12,17 @@ android {
     namespace = "com.umirov.myapplication"
     compileSdk = 35
     buildFeatures {
+        buildConfig = true
+
         viewBinding = true
         compose = true
+        compileOptions {
+            sourceCompatibility = JavaVersion.VERSION_1_8
+            targetCompatibility = JavaVersion.VERSION_1_8
+        }
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
 
     }
 
@@ -31,7 +40,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField ("boolean", "DEBUG", "true")
+        }
         release {
+            buildConfigField ("boolean", "DEBUG", "false")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -59,6 +72,15 @@ android {
 dependencies {
 
 
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.glide)
+    annotationProcessor(libs.compiler)
+
+    implementation (libs.lottie)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -79,6 +101,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 
 
 }
