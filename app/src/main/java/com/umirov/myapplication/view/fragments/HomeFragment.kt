@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.umirov.myapplication.databinding.FragmentHomeBinding
 import com.umirov.myapplication.domain.Film
 import com.umirov.myapplication.utils.AnimationHelper
@@ -19,17 +20,22 @@ import com.umirov.myapplication.view.rv_viewholders.MainActivity
 import com.umirov.myapplication.viewmodel.HomeFragmentViewModel
 
 class HomeFragment : Fragment() {
+
     private val viewModel by lazy {
         ViewModelProvider.NewInstanceFactory().create(HomeFragmentViewModel::class.java)
     }
+
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var filmsAdapter: FilmListRecyclerAdapter
+    private var isLoading = false
+    private val visibleThreshold = 2
+    private var currentPage = 1
+    private var totalPages = 1
 
     private var filmsDataBase = listOf<Film>()
-
         set(value) {
 
             if (field == value) return
@@ -50,18 +56,34 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        AnimationHelper.performFragmentCircularRevealAnimation(binding.homeFragmentRoot, requireActivity(), 1)
+        AnimationHelper.performFragmentCircularRevealAnimation(
+            binding.homeFragmentRoot,
+            requireActivity(),
+            1
+        )
 
         initSearchView()
         initRecycler()
 
-        viewModel.filmsListLiveData.observe(viewLifecycleOwner, Observer<List<Film>>{
+        viewModel.filmsListLiveData.observe(viewLifecycleOwner, Observer<List<Film>> {
+            Log.d("HomeFragment", "LiveData updated with ${it.size} films")
             filmsDataBase = it
         })
 
+        // Add Scroll Listener to RecyclerView
+        binding.mainRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val totalItemCount = layoutManager.itemCount
+                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
 
-
-
+                if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
+                    loadMoreItems()
+                    isLoading = true
+                }
+            }
+        })
     }
 
 
@@ -94,14 +116,12 @@ class HomeFragment : Fragment() {
     private fun initRecycler() {
 
 
-
-
-            filmsAdapter =
-                FilmListRecyclerAdapter(object : FilmListRecyclerAdapter.OnItemClickListener {
-                    override fun click(film: Film) {
-                        (requireActivity() as MainActivity).launchDetailsFragment(film)
-                    }
-                })
+        filmsAdapter =
+            FilmListRecyclerAdapter(object : FilmListRecyclerAdapter.OnItemClickListener {
+                override fun click(film: Film) {
+                    (requireActivity() as MainActivity).launchDetailsFragment(film)
+                }
+            })
         binding.mainRecycler.apply {
 
             adapter = filmsAdapter
@@ -111,14 +131,33 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun loadMoreItems() {
+        currentPage++
+        viewModel.getFilmsFromApi(currentPage, object : HomeFragmentViewModel.ApiCallback {
+            override fun onSuccess(films: List<Film>) {
+                Log.d("HomeFragment", "Films fetched: ${films.size}")
+                filmsAdapter.addItems(films)
+                isLoading = false
+            }
+
+            override fun onFailure() {
+                Log.d("HomeFragment", "Failed to fetch films")
 
 
+                isLoading = false
+            }
+        })
+
+
+    }
 
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
-
 }
+
+
+
+

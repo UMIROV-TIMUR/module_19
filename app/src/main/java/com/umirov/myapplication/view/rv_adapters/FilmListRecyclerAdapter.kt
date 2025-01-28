@@ -5,11 +5,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.umirov.myapplication.data.ApiConstants
 import com.umirov.myapplication.databinding.FilmItemBinding
 import com.umirov.myapplication.domain.Film
 import com.umirov.myapplication.view.customviews.RatingDonutView
 
-class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) : RecyclerView.Adapter<FilmListRecyclerAdapter.FilmViewHolder>() {
+class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) :
+    RecyclerView.Adapter<FilmListRecyclerAdapter.FilmViewHolder>() {
+
+
     private val items = mutableListOf<Film>()
 
     override fun getItemCount() = items.size
@@ -33,26 +37,28 @@ class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) : 
     }
 
     fun addItems(list: List<Film>) {
-        items.clear()
+        val startPosition = items.size
         items.addAll(list)
-        notifyDataSetChanged()
+        notifyItemRangeInserted(startPosition, list.size)
+
+
     }
 
-    inner class FilmViewHolder(private val binding: FilmItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class FilmViewHolder(private val binding: FilmItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(film: Film) {
             Glide.with(itemView)
-                .load(film.poster)
+                .load(ApiConstants.IMAGES_URL + "w342" + film.poster)
                 .centerCrop()
                 .into(binding.poster)
 
             binding.ratingDonut.setProgress((film.rating * 10).toInt())
             binding.title.text = film.title
             binding.description.text = film.description
-            binding.poster.setImageResource(film.poster)
             animateRating(binding.ratingDonut, film.rating)
         }
 
-        private fun animateRating(view: RatingDonutView, rating: Float) {
+        private fun animateRating(view: RatingDonutView, rating: Double) {
             val animator = ValueAnimator.ofInt(0, (rating * 10).toInt())
             animator.duration = 1000
             animator.addUpdateListener { animation ->
